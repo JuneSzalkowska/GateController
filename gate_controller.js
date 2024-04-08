@@ -25,13 +25,11 @@ class GateController {
 
 }
 
-var Progress=0;
+var Progress=0; //zmienna monitoruje jak daleko uczeń przeszedł przez bramke
 
 function GateLogic(){ //funkcja wykonująca się cyklicznie
 
-
-
-    function logStates(){
+    function logStates(){ //Funkcja służyła do testowania 
         function simpleConversion(bool){
             if(bool){
                 return "1";
@@ -53,29 +51,32 @@ function GateLogic(){ //funkcja wykonująca się cyklicznie
         console.log(final)
     }
 
-    
+    //funkcja sprawdza czy dany czujnik coś wykrywa
     function getSensor(name){ //support function for readability sake
         id = ScannerArray[name]
         return Entities[id].special;
     }
 
-    //PONIŻEJ JEST WYTŁUMACZENIE ALGORYTMU
 
-
+    // !!!!!!!!!!! PONIŻEJ JEST WYTŁUMACZENIE ALGORYTMU !!!!!!!!!!! 
 
 
     //Początek algorytmu - Karta włożona
-
-    if(getSensor("Karta_1")&&Progress==0){
-        Progress=1;
-        timer=0;
+    if(Progress==0){ 
+        if(getSensor("Karta_1")){ //uczeń przykłada karte
+            Progress=1;
+            timer=0;
+        }
+        if(getSensor("Czujnik_1")||getSensor("Czujnik_3")){ //uczeń próbuje przejść bez włożenia karty
+            Gate.alert();
+        }
     }
 
-    /*Ze względu na problemy z programem do testowania użyłem statementów if(),
-    jest możliwe użycie pętli while*/
+    /*Ze względu na problemy z "programem" do testowania użyłem statementów if(),
+    jest możliwe użycie pętli while() jeżeli będzie to działało lepiej z oprogramowaniem bramek*/
 
     if(Progress==1){ 
-        if(timer=100){ //Karta była przyłożona a uczeń nie przekroczył sensora 1 przez 10s
+        if(timer=50){ //Karta była przyłożona a uczeń nie przekroczył sensora 1 przez 5s
             Gate.close()
             Progress=0;
         }
@@ -111,7 +112,6 @@ function GateLogic(){ //funkcja wykonująca się cyklicznie
         if(getSensor("Czujnik_1")){ //uczeń próbuje wejść zaraz po tym uczniu
             Gate.alert();        
         }
-
     }
 
     if(Progress==4){
